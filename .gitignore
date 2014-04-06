@@ -1,0 +1,4 @@
+/scripts/node_modules
+/scripts/*.csv
+/scripts/data/*
+!/scripts/data/*.csv
