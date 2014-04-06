@@ -250,4 +250,63 @@ class Model {
 			return false;
 		}
 	}
+	
+	//get street by sid
+	function getStreet($sid) {
+		$sql = 'SELECT street_name
+				FROM streets
+				WHERE sid = ' . $sid;
+		$res = $this->db->query($sql);
+		if($row = $res->fetch_assoc()) {
+			return $row['street_name'];
+		} else {
+			return false;
+		}
+	}
+	
+	//get numbers for oid and sid
+	function getNumbersForOidAndSid($oid, $sid) {
+		//get numbers
+		$sql = 'SELECT number, in_osm
+				FROM numbers
+				WHERE oid = ' . $oid . '
+				AND sid = ' . $sid;
+		$res = $this->db->query($sql);
+		$numbers = array();
+		while($row = $res->fetch_assoc()) {
+			$numbers[] = array(
+				'number' => $row['number'],
+				'status' => array(
+					'in_osm' => $row['in_osm']
+				)
+			);
+		}
+		
+		//sort numbers
+		usort($numbers, 'streetSort');		
+		return $numbers;
+	}
+}
+
+//street sort callback
+function streetSort($a, $b) {
+	//sort by number
+	$int_a = intval($a['number']);
+	$int_b = intval($b['number']);
+	if($int_a != $int_b) {
+		return $int_a - $int_b;
+	}
+	
+	//if one of them has no letter, put it first
+	if((string)$int_a == $a['number']) {
+		return -1;
+	}
+	if((string)$int_b == $b['number']) {
+		return 1;
+	}
+	
+	//sort by letter
+	$str_a = str_replace($int_a, '', $a['number']);
+	$str_b = str_replace($int_b, '', $b['number']);
+	return strnatcmp($str_a, $str_b);
 }

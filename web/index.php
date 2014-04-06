@@ -1,6 +1,7 @@
 <?php
 //includes
 include_once 'templates/progress.php';
+include_once 'templates/status.php';
 
 //init model
 include_once 'includes/model.php';
@@ -12,7 +13,39 @@ include 'templates/header.php';
 <br>
 
 <?php
-if(isset($_GET['bid'])) {
+if(isset($_GET['oid']) && isset($_GET['sid'])) {
+	$oid = intval($_GET['oid']);
+	$sid = intval($_GET['sid']);
+	$ortsteil = $model->getOrtsteil($oid);
+	$street = $model->getStreet($sid);
+	if($ortsteil === false || $street === false) { ?>
+		<h2>Fehler</h2>
+	<?php
+	} else { ?>
+		<h2>Hausnummern in <?php echo $street; ?></h2>
+		<h3>In Ortsteil <?php echo $ortsteil; ?></h3>
+	
+		<table style="width: 370px; margin: 0 auto;">
+		<?php
+		//get numbers
+		$numbers = $model->getNumbersForOidAndSid($oid, $sid);
+		foreach($numbers as $number) { ?>
+			<tr>
+				<td>
+					<?php echo $number['number']; ?>
+				</td>
+				<td style="width: 300px;">
+					<?php showStatus($number['status']); ?>
+				</td>
+			</tr>
+		
+		<?php
+		}
+		?>
+		</table>
+	<?php
+	}
+} elseif(isset($_GET['bid'])) {
 	$bid = intval($_GET['bid']);
 	$bezirk = $model->getBezirk($bid);
 	if($bezirk === false) {?>

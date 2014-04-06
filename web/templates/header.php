@@ -6,8 +6,7 @@
 		* {
 			font-family: verdana, arial;
 		}
-		h1,h2 {
-			margin: 5px;
+		h1,h2,h3 {
 			text-align: center;
 		}
 		h1 {
@@ -16,6 +15,11 @@
 		}
 		h2 {
 			font-size: 1.2em;
+			margin: 5px;
+		}
+		h3 {
+			font-size: 0.9em;
+			margin: 5px;
 		}
 		a {
 			color: #000;
