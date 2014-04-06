@@ -150,4 +150,54 @@ class Model {
 			return false;
 		}
 	}
+	
+	//get streets for oid
+	function getStreetsForOid($oid) {
+		//get total
+		$streets = array();
+		$sql = 'SELECT s.sid, s.street_name, COUNT(*) num
+				FROM numbers n
+				LEFT JOIN streets s
+				ON s.sid = n.sid
+				WHERE n.oid = ' . $oid . '
+				GROUP BY n.sid
+				ORDER BY s.street_name';
+		$res = $this->db->query($sql);
+		while($row = $res->fetch_assoc()) {
+			$streets[$row['sid']] = array(
+				'name' => $row['street_name'],
+				'sid' => $row['sid'],
+				'num' => $row['num'],
+				'in_osm_1' => 0,
+				'in_osm_2' => 0
+			);
+		}
+		
+		//get in_osm 1 and 2
+		for($i = 1; $i <= 2; $i++) {
+			$sql = 'SELECT sid, COUNT(*) num
+					FROM numbers
+					WHERE oid = ' . $oid . '
+						AND in_osm = ' . $i . '
+					GROUP BY sid';
+			$res = $this->db->query($sql);
+			while($row = $res->fetch_assoc()) {
+				$streets[$row['sid']]['in_osm_' . $i] = $row['num'];
+			}
+		}
+		return $streets;
+	}
+	
+	//get ortsteil by oid
+	function getOrtsteil($oid) {
+		$sql = 'SELECT ortsteil_name
+				FROM ortsteile
+				WHERE oid = ' . $oid;
+		$res = $this->db->query($sql);
+		if($row = $res->fetch_assoc()) {
+			return $row['ortsteil_name'];
+		} else {
+			return false;
+		}
+	}
 }

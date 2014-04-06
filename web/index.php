@@ -37,6 +37,31 @@ if(isset($_GET['bid'])) {
 		</table>
 	<?php
 	}
+} elseif(isset($_GET['oid'])) {
+	$oid = intval($_GET['oid']);
+	$ortsteil = $model->getOrtsteil($oid);
+	if($ortsteil === false) {?>
+		<h2>Fehler</h2>
+	<?php } else { ?>
+		<h2>Ortsteil <?php echo $ortsteil; ?></h2>
+		
+		<table>
+		<?php
+		//get streets
+		$streets = $model->getStreetsForOid($oid);
+		foreach($streets as $street) { ?>
+			<tr>
+				<td>
+					<a href="?oid=<?php echo $ortsteil['oid']; ?>"><?php echo $street['name']; ?></a>
+				</td>
+				<td style="width: 300px;"><?php showProgress($street['in_osm_1'], $street['in_osm_2'], $street['num']); ?></td>
+			</tr>
+		<?php
+		}
+		?>
+		</table>
+	<?php
+	}
 } else { 
 ?>
 
