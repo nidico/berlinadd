@@ -52,7 +52,32 @@ if(isset($_GET['bid'])) {
 		foreach($streets as $street) { ?>
 			<tr>
 				<td>
-					<a href="?oid=<?php echo $ortsteil['oid']; ?>"><?php echo $street['name']; ?></a>
+					<a href="?oid=<?php echo $oid; ?>&sid=<?php echo $street['sid']; ?>"><?php echo $street['name']; ?></a>
+				</td>
+				<td style="width: 300px;"><?php showProgress($street['in_osm_1'], $street['in_osm_2'], $street['num']); ?></td>
+			</tr>
+		<?php
+		}
+		?>
+		</table>
+	<?php
+	}
+} elseif(isset($_GET['pid'])) {
+	$pid = intval($_GET['pid']);
+	$postcode = $model->getPostcode($pid);
+	if($postcode === false) {?>
+		<h2>Fehler</h2>
+	<?php } else { ?>
+		<h2>PLZ <?php echo $postcode; ?></h2>
+		
+		<table>
+		<?php
+		//get streets
+		$streets = $model->getStreetsForPid($pid);
+		foreach($streets as $street) { ?>
+			<tr>
+				<td>
+					<a href="?pid=<?php echo $pid; ?>&sid=<?php echo $street['sid']; ?>"><?php echo $street['name']; ?></a>
 				</td>
 				<td style="width: 300px;"><?php showProgress($street['in_osm_1'], $street['in_osm_2'], $street['num']); ?></td>
 			</tr>

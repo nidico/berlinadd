@@ -200,4 +200,54 @@ class Model {
 			return false;
 		}
 	}
+	
+	//get streets for pid
+	function getStreetsForPid($pid) {
+		//get total
+		$streets = array();
+		$sql = 'SELECT s.sid, s.street_name, COUNT(*) num
+				FROM numbers n
+				LEFT JOIN streets s
+				ON s.sid = n.sid
+				WHERE n.pid = ' . $pid . '
+				GROUP BY n.sid
+				ORDER BY s.street_name';
+		$res = $this->db->query($sql);
+		while($row = $res->fetch_assoc()) {
+			$streets[$row['sid']] = array(
+				'name' => $row['street_name'],
+				'sid' => $row['sid'],
+				'num' => $row['num'],
+				'in_osm_1' => 0,
+				'in_osm_2' => 0
+			);
+		}
+		
+		//get in_osm 1 and 2
+		for($i = 1; $i <= 2; $i++) {
+			$sql = 'SELECT sid, COUNT(*) num
+					FROM numbers
+					WHERE pid = ' . $pid . '
+						AND in_osm = ' . $i . '
+					GROUP BY sid';
+			$res = $this->db->query($sql);
+			while($row = $res->fetch_assoc()) {
+				$streets[$row['sid']]['in_osm_' . $i] = $row['num'];
+			}
+		}
+		return $streets;
+	}
+	
+	//get postcode by pid
+	function getPostcode($pid) {
+		$sql = 'SELECT postcode
+				FROM postcodes
+				WHERE pid = ' . $pid;
+		$res = $this->db->query($sql);
+		if($row = $res->fetch_assoc()) {
+			return $row['postcode'];
+		} else {
+			return false;
+		}
+	}
 }
