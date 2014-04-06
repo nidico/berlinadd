@@ -100,4 +100,54 @@ class Model {
 		}
 		return $postcodes;
 	}
+	
+	//get ortsteile
+	function getOrtsteile($bid) {
+		//get total
+		$ortsteile = array();
+		$sql = 'SELECT n.oid, o.ortsteil_name, COUNT(*) num 
+				FROM ortsteile o 
+				LEFT JOIN numbers n 
+					ON o.oid = n.oid
+				WHERE n.bid = ' . $bid . '
+				GROUP BY o.oid
+				ORDER BY o.oid ASC';
+		$res = $this->db->query($sql);
+		while($row = $res->fetch_assoc()) {
+			$ortsteile[$row['oid']] = array(
+				'name' => $row['ortsteil_name'],
+				'oid' => $row['oid'],
+				'num' => $row['num'],
+				'in_osm_1' => 0,
+				'in_osm_2' => 0
+			);
+		}
+		
+		//get in_osm 1 and 2
+		for($i = 1; $i <= 2; $i++) {
+			$sql = 'SELECT oid, COUNT(*) num 
+					FROM numbers n
+					WHERE in_osm = ' . $i . ' 
+						AND bid = ' . $bid . '
+					GROUP BY oid';
+			$res = $this->db->query($sql);
+			while($row = $res->fetch_assoc()) {
+				$ortsteile[$row['oid']]['in_osm_' . $i] = $row['num'];
+			}
+		}
+		return $ortsteile;
+	}
+	
+	//get bezirk by bid
+	function getBezirk($bid) {
+		$sql = 'SELECT bezirk_name
+				FROM bezirke
+				WHERE bid = ' . $bid;
+		$res = $this->db->query($sql);
+		if($row = $res->fetch_assoc()) {
+			return $row['bezirk_name'];
+		} else {
+			return false;
+		}
+	}
 }
