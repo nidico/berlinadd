@@ -267,19 +267,25 @@ class Model {
 	//get numbers for oid and sid
 	function getNumbersForOidAndSid($oid, $sid) {
 		//get numbers
-		$sql = 'SELECT number, in_osm
+		$sql = 'SELECT number, in_osm, warning_country, warning_city, warning_street
 				FROM numbers
 				WHERE oid = ' . $oid . '
 				AND sid = ' . $sid;
 		$res = $this->db->query($sql);
 		$numbers = array();
 		while($row = $res->fetch_assoc()) {
-			$numbers[] = array(
+			$number = array(
 				'number' => $row['number'],
 				'status' => array(
 					'in_osm' => $row['in_osm']
 				)
 			);
+			
+			//add warnings
+			if($row['in_osm'] == 2) {
+				$number['status']['warning'] = makeWarning($row);
+			}
+			$numbers[] = $number;
 		}
 		
 		//sort numbers
@@ -290,25 +296,54 @@ class Model {
 	//get numbers for pid and sid
 	function getNumbersForPidAndSid($pid, $sid) {
 		//get numbers
-		$sql = 'SELECT number, in_osm
+		$sql = 'SELECT number, in_osm, warning_country, warning_city, warning_street
 				FROM numbers
 				WHERE pid = ' . $pid . '
 				AND sid = ' . $sid;
 		$res = $this->db->query($sql);
 		$numbers = array();
 		while($row = $res->fetch_assoc()) {
-			$numbers[] = array(
+			$number = array(
 				'number' => $row['number'],
 				'status' => array(
 					'in_osm' => $row['in_osm']
 				)
 			);
+			
+			//add warnings
+			if($row['in_osm'] == 2) {
+				$number['status']['warning'] = makeWarning($row);
+			}
+			$numbers[] = $number;
 		}
 		
 		//sort numbers
 		usort($numbers, 'streetSort');		
 		return $numbers;
 	}
+}
+
+//make warning
+function makeWarning($row) {
+	$warning = '';
+	if(!is_null($row['warning_country'])) {
+		if($row['warning_country'] == '') {
+			$warning .= '\'addr:country\' fehlt' . '<br>';
+		} else {
+			$warning .= '\'addr:country\' ist \'' . htmlspecialchars($row['warning_country']) . '\' statt \'DE\'' . '<br>';
+		}
+	}
+	if(!is_null($row['warning_city'])) {
+		if($row['warning_city'] == '') {
+			$warning .= '\'addr:city\' fehlt' . '<br>';
+		} else {
+			$warning .= '\'addr:city\' ist \'' . htmlspecialchars($row['warning_city']) . '\' statt \'Berlin\'' . '<br>';
+		}
+	}
+	if(!is_null($row['warning_street'])) {
+		$warning .= '\'addr:street\' ist \'' . htmlspecialchars($row['warning_street']) . '\'' . '<br>';
+	}
+	return $warning;
 }
 
 //street sort callback
