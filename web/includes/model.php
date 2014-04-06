@@ -286,6 +286,29 @@ class Model {
 		usort($numbers, 'streetSort');		
 		return $numbers;
 	}
+	
+	//get numbers for pid and sid
+	function getNumbersForPidAndSid($pid, $sid) {
+		//get numbers
+		$sql = 'SELECT number, in_osm
+				FROM numbers
+				WHERE pid = ' . $pid . '
+				AND sid = ' . $sid;
+		$res = $this->db->query($sql);
+		$numbers = array();
+		while($row = $res->fetch_assoc()) {
+			$numbers[] = array(
+				'number' => $row['number'],
+				'status' => array(
+					'in_osm' => $row['in_osm']
+				)
+			);
+		}
+		
+		//sort numbers
+		usort($numbers, 'streetSort');		
+		return $numbers;
+	}
 }
 
 //street sort callback

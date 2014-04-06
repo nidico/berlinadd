@@ -13,7 +13,39 @@ include 'templates/header.php';
 <br>
 
 <?php
-if(isset($_GET['oid']) && isset($_GET['sid'])) {
+if(isset($_GET['pid']) && isset($_GET['sid'])) {
+	$pid = intval($_GET['pid']);
+	$sid = intval($_GET['sid']);
+	$postcode = $model->getPostcode($pid);
+	$street = $model->getStreet($sid);
+	if($postcode === false || $street === false) { ?>
+		<h2>Fehler</h2>
+	<?php
+	} else { ?>
+		<h2>Hausnummern in <?php echo $street; ?></h2>
+		<h3>In PLZ <?php echo $postcode; ?></h3>
+	
+		<table style="width: 370px; margin: 0 auto;">
+		<?php
+		//get numbers
+		$numbers = $model->getNumbersForPidAndSid($pid, $sid);
+		foreach($numbers as $number) { ?>
+			<tr>
+				<td>
+					<?php echo $number['number']; ?>
+				</td>
+				<td style="width: 300px;">
+					<?php showStatus($number['status']); ?>
+				</td>
+			</tr>
+		
+		<?php
+		}
+		?>
+		</table>
+	<?php
+	}
+} elseif(isset($_GET['oid']) && isset($_GET['sid'])) {
 	$oid = intval($_GET['oid']);
 	$sid = intval($_GET['sid']);
 	$ortsteil = $model->getOrtsteil($oid);
