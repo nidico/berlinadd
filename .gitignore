@@ -2,3 +2,4 @@
 /scripts/*.csv
 /scripts/data/*
 !/scripts/data/*.csv
+/web/impressum.php

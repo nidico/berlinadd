@@ -35,4 +35,6 @@
 	</head>
 	<body>
 		<div style="margin: 0 auto; width: 550px; background-color: #eee; padding: 20px 70px; padding-top: 5px;">
-			<h1>OSM Berlin Address Progress</h1>
+			<a href="/">
+				<h1>OSM Berlin Address Progress</h1>
+			</a>
