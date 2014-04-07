@@ -1,14 +1,14 @@
 pbfParser = require('./osm-read/lib/pbfParser.js');
-fs = require('fs');
+addressCsv = require('./addressCsv.js');
 
 //open output file
-var file = fs.createWriteStream('osm.csv', {'flags': 'w'});
+addressCsv.openFile('osm.csv');
 
 //parse osm file
 pbfParser.parse({
 	filePath: 'data/berlin-latest.osm.pbf',
 	endDocument: function(){
-		
+		process.exit(0);
 	},
 	node: function(node){
 		addr(node);
@@ -27,21 +27,21 @@ pbfParser.parse({
 function addr(data) {
 	//postcode
 	if(data.tags['addr:postcode'] != undefined) {
-		var postcode = data.tags['addr:postcode'].replace(",", "");
+		var postcode = data.tags['addr:postcode'];
 	} else {
 		return;
 	}
 	
 	//street
 	if(data.tags['addr:street'] != undefined) {
-		var street = data.tags['addr:street'].replace(",", "");
+		var street = data.tags['addr:street'];
 	} else {
 		return;
 	}
 	
 	//housenumber
 	if(data.tags['addr:housenumber'] != undefined) {
-		var housenumber = data.tags['addr:housenumber'].replace(",", "");
+		var housenumber = data.tags['addr:housenumber'];
 	} else {
 		return;
 	}
@@ -49,23 +49,21 @@ function addr(data) {
 	//city
 	var city = '';
 	if(data.tags['addr:city'] != undefined) {
-		city = data.tags['addr:city'].replace(",", "");
+		city = data.tags['addr:city'];
 	}
 	
 	//country
 	var country = '';
 	if(data.tags['addr:country'] != undefined) {
-		country = data.tags['addr:country'].replace(",", "");
+		country = data.tags['addr:country'];
 	}
 	
 	//suburb
 	var suburb = '';
 	if(data.tags['addr:suburb'] != undefined) {
-		suburb = data.tags['addr:suburb'].replace(",", "");
+		suburb = data.tags['addr:suburb'];
 	}
 		
-	//generate output
-	var output = postcode + "," + street + "," + housenumber + "," + city + "," + suburb + "," + country;
-	file.write(output + "\n");
-	console.log(output);
+	//write to file
+	addressCsv.writeAddress(postcode, street, housenumber, city, suburb, country);
 }
