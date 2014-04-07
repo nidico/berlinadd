@@ -1,0 +1,3 @@
+[submodule "osm-read"]
+        path = scripts/osm-read
+        url = https://github.com/marook/osm-read
