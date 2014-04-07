@@ -267,7 +267,7 @@ class Model {
 	//get numbers for oid and sid
 	function getNumbersForOidAndSid($oid, $sid) {
 		//get numbers
-		$sql = 'SELECT number, in_osm, warning_country, warning_city, warning_street
+		$sql = 'SELECT number, in_osm, warning_country, warning_city, warning_street, warning_interpolated
 				FROM numbers
 				WHERE oid = ' . $oid . '
 				AND sid = ' . $sid;
@@ -296,7 +296,7 @@ class Model {
 	//get numbers for pid and sid
 	function getNumbersForPidAndSid($pid, $sid) {
 		//get numbers
-		$sql = 'SELECT number, in_osm, warning_country, warning_city, warning_street
+		$sql = 'SELECT number, in_osm, warning_country, warning_city, warning_street, warning_interpolated
 				FROM numbers
 				WHERE pid = ' . $pid . '
 				AND sid = ' . $sid;
@@ -326,6 +326,9 @@ class Model {
 //make warning
 function makeWarning($row) {
 	$warning = '';
+	if($row['warning_interpolated'] == 1) {
+		$warning .= 'Interpoliert' . '<br>';
+	}
 	if(!is_null($row['warning_country'])) {
 		if($row['warning_country'] == '') {
 			$warning .= '\'addr:country\' fehlt' . '<br>';
