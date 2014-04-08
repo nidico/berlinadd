@@ -2,6 +2,9 @@
 include_once 'db.php';
 include_once 'lib.php';
 
+ignore_user_abort(true);
+set_time_limit(0);
+
 //format tables
 $sql = '
 DROP TABLE IF EXISTS bezirke;
@@ -54,6 +57,14 @@ CREATE TABLE numbers (
 	INDEX pid_in_osm (pid, in_osm),
 	INDEX(in_osm)
 ) DEFAULT CHARSET utf8;
+
+DROP TABLE IF EXISTS stats;
+CREATE TABLE stats (
+	stid VARCHAR(255) NOT NULL PRIMARY KEY,
+	value VARCHAR(255)
+) DEFAULT CHARSET utf8;
+INSERT INTO stats (stid, value) VALUES(\'isUpdating\', \'1\');
+INSERT INTO stats (stid, value) VALUES(\'lastUpdate\', \'0\');
 ';
 $db->multi_query($sql);
 while ($db->next_result()) {;} // flush multi_queries

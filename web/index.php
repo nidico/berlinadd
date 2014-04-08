@@ -3,10 +3,6 @@
 include_once 'templates/progress.php';
 include_once 'templates/status.php';
 
-//init model
-include_once 'includes/model.php';
-$model = new Model();
-
 //header template
 include 'templates/header.php';
 ?>

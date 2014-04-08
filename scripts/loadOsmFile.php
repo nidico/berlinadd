@@ -2,6 +2,15 @@
 include_once 'db.php';
 include_once 'lib.php';
 
+ignore_user_abort(true);
+set_time_limit(0);
+
+//set is updating
+$sql = 'UPDATE stats
+		SET value = 1
+		WHERE stid = \'isUpdating\'';
+$db->query($sql);
+
 //reset database
 $sql = 'UPDATE numbers
 		SET warning_country = NULL,
@@ -202,3 +211,13 @@ function insertWarning($nid, $warning, $value) {
 			WHERE nid = ' . $nid;
 	$db->query($sql);
 }
+
+//set is updating and time
+$sql = 'UPDATE stats
+		SET value = 0
+		WHERE stid = \'isUpdating\'';
+$db->query($sql);
+$sql = 'UPDATE stats
+		SET value = ' . time() . '
+		WHERE stid = \'lastUpdate\'';
+$db->query($sql);

@@ -321,6 +321,30 @@ class Model {
 		usort($numbers, 'streetSort');		
 		return $numbers;
 	}
+	
+	//is updating?
+	function isUpdating() {
+		$sql = 'SELECT value
+				FROM stats
+				WHERE stid = \'isUpdating\'';
+		$res = $this->db->query($sql);
+		if($row = $res->fetch_assoc()) {
+			return $row['value'];
+		}
+		return false;
+	}
+	
+	//last update time
+	function lastUpdate() {
+		$sql = 'SELECT value
+				FROM stats
+				WHERE stid = \'lastUpdate\'';
+		$res = $this->db->query($sql);
+		if($row = $res->fetch_assoc()) {
+			return $row['value'];
+		}
+		return 0;
+	}
 }
 
 //make warning

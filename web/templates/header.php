@@ -1,3 +1,8 @@
+<?php
+//init model
+include_once 'includes/model.php';
+$model = new Model();
+?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -38,3 +43,8 @@
 			<a href="/">
 				<h1>OSM Berlin Address Progress</h1>
 			</a>
+			<?php if($model->isUpdating()) { ?>
+				<div style="color: red; text-align: center; font-size: 0.8em;">
+					Daten werden gerade aktualisiert...
+				</div>
+			<?php } ?>
