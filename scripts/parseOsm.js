@@ -8,7 +8,7 @@ addressCsv.openFile('osm.csv');
 pbfParser.parse({
 	filePath: 'data/berlin-latest.osm.pbf',
 	endDocument: function(){
-		process.exit(0);
+		//process.exit(0);
 	},
 	node: function(node){
 		addr(node);

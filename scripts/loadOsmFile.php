@@ -2,6 +2,16 @@
 include_once 'db.php';
 include_once 'lib.php';
 
+//reset database
+$sql = 'UPDATE numbers
+		SET warning_country = NULL,
+			warning_street = NULL,
+			warning_city = NULL,
+			warning_mentioned = NULL,
+			warning_interpolated = 0,
+			in_osm = 0';
+$db->query($sql);
+
 //handle dedicated addresses
 if (($handle = fopen("osm.csv", "r")) !== FALSE) {
     while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
