@@ -7,6 +7,7 @@ $model = new Model();
 <html>
 	<head>
 		<title>OSM Berlin Address Progress</title>
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> 
 		<style type="text/css">
 		* {
 			font-family: verdana, arial;
