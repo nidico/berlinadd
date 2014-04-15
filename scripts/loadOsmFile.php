@@ -23,7 +23,7 @@ $db->query($sql);
 
 //handle dedicated addresses
 if (($handle = fopen("osm.csv", "r")) !== FALSE) {
-    while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+    while (($row = fgetcsv($handle, 1000, ",", '"')) !== FALSE) {
     	$postcode = $row[0];
     	$street = $row[1];
     	$origHousenumber = $row[2];
@@ -41,7 +41,7 @@ if (($handle = fopen("osm.csv", "r")) !== FALSE) {
     	$housenumber = formatHousenumber($housenumber);
     	
     	//split housenumber
-    	$splitHousenumbers = preg_split('/[\-,\/]+/i', $housenumber);
+    	$splitHousenumbers = preg_split('/[\-,\/;]+/i', $housenumber);
     	$isMentioned = false;
     	$housenumbers = array();
     	if(count($splitHousenumbers) > 1) {

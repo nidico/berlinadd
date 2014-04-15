@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import urllib2, sys, os, hashlib
 
 def file_get_contents(filename):
