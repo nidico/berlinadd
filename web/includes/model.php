@@ -267,7 +267,7 @@ class Model {
 	//get numbers for oid and sid
 	function getNumbersForOidAndSid($oid, $sid) {
 		//get numbers
-		$sql = 'SELECT number, in_osm, warning_country, warning_city, warning_street, warning_interpolated, warning_mentioned
+		$sql = 'SELECT nid, number, in_osm, warning_country, warning_city, warning_street, warning_interpolated, warning_mentioned
 				FROM numbers
 				WHERE oid = ' . $oid . '
 				AND sid = ' . $sid;
@@ -275,6 +275,7 @@ class Model {
 		$numbers = array();
 		while($row = $res->fetch_assoc()) {
 			$number = array(
+				'nid' => $row['nid'],
 				'number' => $row['number'],
 				'status' => array(
 					'in_osm' => $row['in_osm']
@@ -296,7 +297,7 @@ class Model {
 	//get numbers for pid and sid
 	function getNumbersForPidAndSid($pid, $sid) {
 		//get numbers
-		$sql = 'SELECT number, in_osm, warning_country, warning_city, warning_street, warning_interpolated, warning_mentioned
+		$sql = 'SELECT nid, number, in_osm, warning_country, warning_city, warning_street, warning_interpolated, warning_mentioned
 				FROM numbers
 				WHERE pid = ' . $pid . '
 				AND sid = ' . $sid;
@@ -304,6 +305,7 @@ class Model {
 		$numbers = array();
 		while($row = $res->fetch_assoc()) {
 			$number = array(
+				'nid' => $row['nid'],
 				'number' => $row['number'],
 				'status' => array(
 					'in_osm' => $row['in_osm']
@@ -320,6 +322,27 @@ class Model {
 		//sort numbers
 		usort($numbers, 'streetSort');		
 		return $numbers;
+	}
+	
+	//get number
+	function getNumber($nid) {
+		$sql = 'SELECT n.number, b.bid, b.bezirk_name, o.oid, o.ortsteil_name, p.pid, p.postcode, s.street_name
+				FROM numbers n
+				LEFT JOIN bezirke b 
+				ON b.bid = n.bid
+				LEFT JOIN ortsteile o 
+				ON o.oid = n.oid
+				LEFT JOIN postcodes p 
+				ON p.pid = n.pid
+				LEFT JOIN streets s 
+				ON s.sid = n.sid
+				WHERE n.nid = ' . $nid;
+		$res = $this->db->query($sql);
+		$row = $res->fetch_assoc();
+		if($row) {
+			return $row;
+		}
+		return false;	
 	}
 	
 	//is updating?

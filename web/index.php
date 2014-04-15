@@ -9,7 +9,48 @@ include 'templates/header.php';
 <br>
 
 <?php
-if(isset($_GET['pid']) && isset($_GET['sid'])) {
+if(isset($_GET['nid'])) {
+	$nid = intval($_GET['nid']);
+	$number = $model->getNumber($nid);
+	if($number === false) { ?>
+		<h2>Fehler</h2>
+	<?php } else { ?>
+		<table style="width: 350px; margin: 0 auto;">
+			<tr>
+				<td>Bezirk:</td>
+				<td>
+					<a href="?bid=<?php echo $number['bid']; ?>">
+						<?php echo $number['bezirk_name']; ?>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Ortsteil:</td>
+				<td>
+					<a href="?oid=<?php echo $number['oid']; ?>">
+						<?php echo $number['ortsteil_name']; ?>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>PLZ:</td>
+				<td>
+					<a href="?pid=<?php echo $number['pid']; ?>">
+						<?php echo $number['postcode']; ?>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Straße:</td>
+				<td><?php echo $number['street_name']; ?></td>
+			</tr>
+			<tr>
+				<td>Nummer:</td>
+				<td><?php echo $number['number']; ?></td>
+			</tr>
+		</table>
+	<?php }
+} elseif(isset($_GET['pid']) && isset($_GET['sid'])) {
 	$pid = intval($_GET['pid']);
 	$sid = intval($_GET['sid']);
 	$postcode = $model->getPostcode($pid);
@@ -28,7 +69,9 @@ if(isset($_GET['pid']) && isset($_GET['sid'])) {
 		foreach($numbers as $number) { ?>
 			<tr>
 				<td>
-					<?php echo $number['number']; ?>
+					<a href="?nid=<?php echo $number['nid']; ?>">
+						<?php echo $number['number']; ?>
+					</a>
 				</td>
 				<td style="width: 300px;">
 					<?php showStatus($number['status']); ?>
@@ -60,7 +103,9 @@ if(isset($_GET['pid']) && isset($_GET['sid'])) {
 		foreach($numbers as $number) { ?>
 			<tr>
 				<td>
-					<?php echo $number['number']; ?>
+					<a href="?nid=<?php echo $number['nid']; ?>">
+						<?php echo $number['number']; ?>
+					</a>
 				</td>
 				<td style="width: 300px;">
 					<?php showStatus($number['status']); ?>
