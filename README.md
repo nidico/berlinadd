@@ -2,7 +2,7 @@ The original project can be found at [berlinadd.morbz.de](http://berlinadd.morbz
 
 Setup
 --------------
-* Install git, zip, node.js, php, mysql
+* Install git, zip, node.js, php, mysql, proj-bin
 
 * Get project files  
 `git clone --recursive https://github.com/MorbZ/berlinadd`

@@ -45,6 +45,8 @@ CREATE TABLE numbers (
 	oid INT,
 	pid INT,
 	number VARCHAR(255),
+	lat DECIMAL(8, 6),
+	lon DECIMAL(9, 6),
 	warning_country VARCHAR(255),
 	warning_street VARCHAR(255),
 	warning_city VARCHAR(255),
@@ -110,7 +112,8 @@ foreach($ortsteile as $k => $v) {
 }
 
 //load address file
-if (($handle = fopen("data/HKO_EPSG5650_2013-12-13.txt", "r")) !== FALSE) {
+$numberCache = array();
+if (($handle = fopen("data/HKO_EPSG3068_2013-12-13.txt", "r")) !== FALSE) {
     while (($row = fgetcsv($handle, 1000, ";")) !== FALSE) {
     	//utf8 encode
     	foreach($row as $k => $v) {
@@ -123,6 +126,9 @@ if (($handle = fopen("data/HKO_EPSG5650_2013-12-13.txt", "r")) !== FALSE) {
         $numberInt = $db->real_escape_string($row[9]);
         $numberExt = $db->real_escape_string($row[10]);
         $number = $numberInt . $numberExt;
+        $coord1 = $db->real_escape_string($row[11]);
+        $coord2 = $db->real_escape_string($row[12]);
+        $coords = array($coord1, $coord2);
         $street = $db->real_escape_string($row[13]);
         $postcode = $db->real_escape_string($row[14]);
         
@@ -168,8 +174,79 @@ if (($handle = fopen("data/HKO_EPSG5650_2013-12-13.txt", "r")) !== FALSE) {
         $sql = 'INSERT INTO numbers (sid, bid, oid, pid, number)
         		VALUES (' . $sid . ', ' . $bid . ', ' . $oid . ', ' . $pid . ', \'' . $number . '\')';
         $db->query($sql);
-        
         echo 'Insert: ' . $pid . ' ' . $sid . ' ' . $postcode . ' ' . $street . ' ' . $number . "\n";
+        
+        //add to number cache
+        $nid = $db->insert_id;
+        $numberCache[$nid] = $coords;
+        if(count($numberCache) >= 10000) {
+        	addCoords();
+        }
     }
     fclose($handle);
+}
+addCoords();
+
+//add coords to numbers
+function addCoords() {
+	global $numberCache, $db;
+	
+	echo 'Convert coords..' . "\n";
+	
+	//empty?
+	if(count($numberCache) == 0) {
+		return;
+	}
+	
+	//convert
+	$newCoords = convert($numberCache);
+	$i = 0;
+	foreach($numberCache as $nid => $coord) {
+		$sql = 'UPDATE numbers
+				SET lat = ' . $newCoords[$i][0] . ',
+					lon = ' . $newCoords[$i][1] . '
+				WHERE nid = ' . $nid;
+		$db->query($sql);
+		$i++;
+	}
+	$numberCache = array();
+}
+
+//convert from EPSG:3068 to lat lon
+function convert($ary) {
+	//open process
+	$descriptorspec = array(
+		0 => array("pipe","r"),
+		1 => array("pipe","w"),
+		2 => array("pipe", "w")
+	);
+	$cmd = '/usr/local/bin/cs2cs -f "%.6f" -v +init=epsg:3068 +to +init=epsg:4326';
+	$process = proc_open($cmd, $descriptorspec, $pipes);
+	if(is_resource($process)) {
+		//write coords
+		$out = '';
+		foreach($ary as $coords) {
+			$coord1 = str_replace(',', '.', $coords[0]);
+			$coord2 = str_replace(',', '.', $coords[1]);
+			$coord = $coord1 . ' ' . $coord2 . "\n";
+			fwrite($pipes[0], $coord);
+		}
+		fclose($pipes[0]);
+		
+		//read coords
+		$out = stream_get_contents($pipes[1]);
+		$lines = explode("\n", $out);
+		$newAry = array();
+		foreach($lines as $line) {
+			//skip line?
+			if(mb_substr($line, 0, 1) == '#' || strlen($line) == 0) {
+				continue;
+			}
+			
+			//parse coords
+			$parts = preg_split('/\s+/', $line);
+			$newAry[] = array($parts[1], $parts[0]);
+		}
+		return $newAry;
+	}
 }
