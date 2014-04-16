@@ -326,7 +326,7 @@ class Model {
 	
 	//get number
 	function getNumber($nid) {
-		$sql = 'SELECT n.number, b.bid, b.bezirk_name, o.oid, o.ortsteil_name, p.pid, p.postcode, s.street_name
+		$sql = 'SELECT n.number, n.lat, n.lon, b.bid, b.bezirk_name, o.oid, o.ortsteil_name, p.pid, p.postcode, s.street_name
 				FROM numbers n
 				LEFT JOIN bezirke b 
 				ON b.bid = n.bid

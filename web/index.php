@@ -49,6 +49,23 @@ if(isset($_GET['nid'])) {
 				<td><?php echo $number['number']; ?></td>
 			</tr>
 		</table>
+		
+		<br>
+		<div id="map" style="width: 500px; height: 500px; margin: 0 auto;"></div>
+		<script>
+			var lat = <?php echo $number['lat']; ?>;
+			var lon = <?php echo $number['lon']; ?>;
+
+			var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+			var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+			var osm = new L.TileLayer(osmUrl, {minZoom: 1, maxZoom: 19, attribution: osmAttrib});		
+
+			map = new L.Map('map');
+			map.setView(new L.LatLng(lat, lon), 17);
+			map.addLayer(osm);
+		
+			L.marker([lat, lon]).addTo(map);
+		 </script>
 	<?php }
 } elseif(isset($_GET['pid']) && isset($_GET['sid'])) {
 	$pid = intval($_GET['pid']);

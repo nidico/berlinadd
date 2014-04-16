@@ -7,7 +7,8 @@ $model = new Model();
 <html>
 	<head>
 		<title>OSM Berlin Address Progress</title>
-		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> 
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
 		<style type="text/css">
 		* {
 			font-family: verdana, arial;
@@ -38,6 +39,7 @@ $model = new Model();
 			width: 100%;
 		}
 		</style>
+		<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
 	</head>
 	<body>
 		<div style="margin: 0 auto; width: 550px; background-color: #eee; padding: 20px 70px; padding-top: 5px;">
