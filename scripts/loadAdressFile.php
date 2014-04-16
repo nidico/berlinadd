@@ -179,7 +179,7 @@ if (($handle = fopen("data/HKO_EPSG3068_2013-12-13.txt", "r")) !== FALSE) {
         //add to number cache
         $nid = $db->insert_id;
         $numberCache[$nid] = $coords;
-        if(count($numberCache) >= 10000) {
+        if(count($numberCache) >= 1000) {
         	addCoords();
         }
     }
@@ -233,8 +233,13 @@ function convert($ary) {
 		}
 		fclose($pipes[0]);
 		
-		//read coords
+		//read output
 		$out = stream_get_contents($pipes[1]);
+		fclose($pipes[1]);
+		fclose($pipes[2]);
+		proc_close($process);
+		
+		//parse coords
 		$lines = explode("\n", $out);
 		$newAry = array();
 		foreach($lines as $line) {
