@@ -220,7 +220,7 @@ function convert($ary) {
 		1 => array("pipe","w"),
 		2 => array("pipe", "w")
 	);
-	$cmd = '/usr/local/bin/cs2cs -f "%.6f" -v +init=epsg:3068 +to +init=epsg:4326';
+	$cmd = 'cs2cs -f "%.6f" -v +init=epsg:3068 +to +init=epsg:4326';
 	$process = proc_open($cmd, $descriptorspec, $pipes);
 	if(is_resource($process)) {
 		//write coords

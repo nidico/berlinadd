@@ -15,6 +15,7 @@ if(isset($_GET['nid'])) {
 	if($number === false) { ?>
 		<h2>Fehler</h2>
 	<?php } else { ?>
+		<?php $title = $number['street_name'] . ' ' . $number['number'] . ' in ' . $number['postcode'] . ' ' . $number['ortsteil_name'] . '/' . $number['bezirk_name']; ?>
 		<table style="width: 350px; margin: 0 auto;">
 			<tr>
 				<td>Bezirk:</td>
@@ -76,6 +77,7 @@ if(isset($_GET['nid'])) {
 		<h2>Fehler</h2>
 	<?php
 	} else { ?>
+		<?php $title = $street . ' in ' . $postcode; ?>
 		<h2>Hausnummern in <?php echo $street; ?></h2>
 		<h3>In PLZ <?php echo $postcode; ?></h3>
 	
@@ -110,6 +112,7 @@ if(isset($_GET['nid'])) {
 		<h2>Fehler</h2>
 	<?php
 	} else { ?>
+		<?php $title = $street . ' in ' . $ortsteil; ?>
 		<h2>Hausnummern in <?php echo $street; ?></h2>
 		<h3>In Ortsteil <?php echo $ortsteil; ?></h3>
 	
@@ -141,6 +144,7 @@ if(isset($_GET['nid'])) {
 	if($bezirk === false) {?>
 		<h2>Fehler</h2>
 	<?php } else { ?>
+		<?php $title = 'Bezirk ' . $bezirk; ?>
 		<h2>Bezirk <?php echo $bezirk; ?></h2>
 		
 		<table>
@@ -166,6 +170,7 @@ if(isset($_GET['nid'])) {
 	if($ortsteil === false) {?>
 		<h2>Fehler</h2>
 	<?php } else { ?>
+		<?php $title = 'Ortsteil ' . $ortsteil; ?>
 		<h2>Ortsteil <?php echo $ortsteil; ?></h2>
 		
 		<table>
@@ -191,6 +196,7 @@ if(isset($_GET['nid'])) {
 	if($postcode === false) {?>
 		<h2>Fehler</h2>
 	<?php } else { ?>
+		<?php $title = 'PLZ ' . $postcode; ?>
 		<h2>PLZ <?php echo $postcode; ?></h2>
 		
 		<table>

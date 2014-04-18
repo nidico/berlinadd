@@ -1,4 +1,8 @@
 <?php
+//buffer output
+ob_start();
+$title = '';
+
 //init model
 include_once 'includes/model.php';
 $model = new Model();
@@ -6,7 +10,7 @@ $model = new Model();
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>OSM Berlin Address Progress</title>
+		<title>%TITLE%</title>
 		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
 		<style type="text/css">

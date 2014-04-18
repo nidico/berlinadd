@@ -12,3 +12,15 @@
 		<br><br>
 	</body>
 </html>
+
+<?php
+//show output
+$buffer=ob_get_contents();
+ob_end_clean();
+if(strlen($title) != 0) {
+	$title .= ' - ';
+}
+$title .= 'berlinadd';
+$buffer=str_replace('%TITLE%', $title, $buffer);
+echo $buffer;
+?>
