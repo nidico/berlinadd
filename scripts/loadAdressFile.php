@@ -121,6 +121,7 @@ if (($handle = fopen("data/HKO_EPSG3068_2013-12-13.txt", "r")) !== FALSE) {
     	}
     
     	//get data
+        $quality = $row[2];
         $bid = intval($row[6]);
         $oid = intval($row[7]);
         $numberInt = $db->real_escape_string($row[9]);
@@ -131,7 +132,14 @@ if (($handle = fopen("data/HKO_EPSG3068_2013-12-13.txt", "r")) !== FALSE) {
         $coords = array($coord1, $coord2);
         $street = $db->real_escape_string($row[13]);
         $postcode = $db->real_escape_string($row[14]);
-        
+
+        // Don't include planned building
+        // see http://fbinter.stadt-berlin.de/fb_daten/beschreibung/sachdaten/s_hauskoordinaten.html
+        // Qualitaetsangaben A (exakte Hauskoordinate) und R (Koordinate auf dem Grundstueck, geplantes Gebaeude)
+        if ($quality == 'R') {
+            continue;
+        }
+
         //wrong ortsteil numbers
         if($oid < 100) {
         	continue;
